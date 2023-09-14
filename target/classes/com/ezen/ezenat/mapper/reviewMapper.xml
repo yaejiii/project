@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ezen.test.mapper.reviewMapper">
+
+ <insert id="insert_review">
+	insert into ezenat_review_board values(
+	reviewBoard_seq.nextval,
+	#{product_num},
+	#{member_num},
+	#{content},
+	sysdate,
+	#{height},
+	#{weight},
+	#{score}
+	)
+</insert>
+
+<insert id="insert_review_image">
+	insert into ezenat_review_board values(
+	#{review_board_images_num},
+	#{review_board_num},
+	#{filename}
+	)
+</insert>
+
+ <select id="list_review">
+	 select * from (
+	 select rownum rn, A.* 
+	 from (select * from ezenat_review_board 
+	 order by review_board_num desc, write_date asc)A) 
+	 where rn 
+	 between #{start} and #{end}
+ </select>
+
+<select id="get_count">
+	select count(*) from ezenat_review_board
+</select>
+
+<select id="get_score_review" resultType="double">
+	select avg(score)
+	from ezenat_review_board
+	where product_num = #{product_num}
+</select>
+
+</mapper>

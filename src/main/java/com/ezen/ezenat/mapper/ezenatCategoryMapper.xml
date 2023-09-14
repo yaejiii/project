@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.ezen.ezenat.mapper.ezenatCategoryMapper">
+
+
+ 	<insert id = "insert_category" parameterType="EzenatCategoryDTO">
+ 		insert into ezenat_category values(
+ 		#{category_level}
+ 		, #{category_name}
+ 		, #{category_code}
+ 		, #{category_parent, jdbcType=VARCHAR}
+ 		)
+ 	</insert>
+ 	
+ 	<select id="get_category" parameterType="String" resultType="EzenatCategoryDTO">
+ 		select * 
+ 		from ezenat_category where 
+ 		category_code = #{category_code}
+ 	</select>
+ 	
+ 	<update id="update_category" parameterType="EzenatCategoryDTO">
+		update ezenat_category set 
+		category_name = #{category_name} where category_code = #{category_code}
+ 	</update>
+ 	 	
+ 	<delete id="delete_category" parameterType="String">
+ 		delete from ezenat_category where category_code = #{category_code}
+ 	</delete>
+ 	
+ 	<update id="delete_catecode" parameterType="String">
+ 		update ezenat_product set product_del = "Y" where category_code = #{category_code}
+ 	</update>
+</mapper>

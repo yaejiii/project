@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.ezen.ezenat.mapper.ezenatfaqBoardMapper"> <!-- 자기이름  중복된 이름 나올 경우, 자기 경로 제대로 찾아가도록 하기 위해 미리ㅣ 씀--> 
+
+ <insert id="insert_faq_board" parameterType="EzenatfaqBoardDTO">
+ 	insert into ezenat_faq_board values(
+ 	ezenat_faq_board_seq.nextval, 
+ 	#{faq_board_subject}, 
+ 	#{faq_board_content}, 
+ 	sysdate, 
+ 	#{faq_board_writer}, 
+ 	#{faq_board_writer_ip}
+ 	)
+ </insert>
+
+<select id="list_faq_board" resultType="EzenatfaqBoardDTO">
+	select * from (select rownum rn, A.* 
+	from(select * from ezenat_faq_board order by faq_board_num desc)A) where rn between #{ startRow } and #{ endRow }
+</select>
+
+<select id="get_faq_board_count" resultType="int">
+	select count(*) from ezenat_faq_board
+</select>
+
+<select id="get_faq_board_content"  parameterType="int" resultType="EzenatfaqBoardDTO"> 
+ 	select * from ezenat_faq_board where faq_board_num = 
+ 	#{faq_board_num}
+ </select> 
+
+<select id="search_faq_board" parameterType="map" resultType="EzenatfaqBoardDTO">
+	select * from ezenat_faq_board 
+	where #{search} like CONCAT('%'|| #{search_string}, '%')
+	and FAQ_BOARD_INPUT_DATE between #{start_date} and #{end_date}
+
+</select>
+
+
+ <update id="updateBoard" parameterType="EzenatfaqBoardDTO">
+ 	update ezenat_faq_board set faq_board_subject=#{faq_board_subject}, faq_board_content=#{faq_board_content} where faq_board_num = #{faq_board_num}
+ </update>
+ 
+ <delete id="delete_faq_board" parameterType="int">
+ 	delete from ezenat_faq_board where faq_board_num = #{faq_board_num}
+ </delete>  
+</mapper>

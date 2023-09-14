@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ezen.ezenat.mapper.addressMapper">
+ 
+ 	<insert id="insertAddress" parameterType="EzenatAddressDTO">
+		insert into ezenat_address values(ezenat_address_num_seq.nextval
+		, #{rcv_name}
+		, #{address_name}
+		, #{rcv_hp}
+		, #{rcv_hp2}
+		, #{rcv_hp3}
+		, #{rcv_tel1}
+		, #{rcv_tel2}
+		, #{rcv_tel3}
+		, #{zip_code}
+		, #{address}
+		, #{address_detail}
+		, #{rcv_request , jdbcType=VARCHAR}
+		, #{rcv_default , jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="listAddress" resultType="EzenatAddressDTO">
+		select * from ezenat_address
+	</select>
+	
+	<select id="getAddress" parameterType="int" resultType="EzenatAddressDTO">
+		select * from ezenat_address where address_num=#{address_num}
+	</select>
+	
+	<update id="updateAddress">
+		update ezenat_address set address_name=#{address_name}
+		, rcv_name=#{rcv_name}
+		, zip_code=#{zip_code}
+		, address=#{address}
+		, address_detail=#{address_detail}
+		, rcv_tel1=#{rcv_tel1}
+		, rcv_tel2=#{rcv_tel2}
+		, rcv_tel3=#{rcv_tel3}
+		, rcv_hp=#{rcv_hp}
+		, rcv_hp2=#{rcv_hp2}
+		, rcv_hp3=#{rcv_hp3}
+		, rcv_request=#{rcv_request , jdbcType=VARCHAR}
+		, rcv_default=#{rcv_default , jdbcType=VARCHAR}
+		
+	</update>
+	
+	<delete id="deleteAddress" parameterType="int">
+ 		delete from ezenat_address where address_num = #{address_num}
+ 	</delete>
+
+</mapper>

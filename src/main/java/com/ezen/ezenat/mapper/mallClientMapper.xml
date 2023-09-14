@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.ezen.ezenat.mapper.mallClientMapper">
+
+	<select id = "getCount" resultType="int">
+		select count(*) from
+			(select A.*, B.* from 
+				(ezenat_product A inner join ezenat_product_image B 
+					on A.product_num = B.product_num
+				) where A.product_del = 'N'
+			)
+	</select>
+	
+	<select id = "getProductList" parameterType="Map" resultType="ezenatProductAllDTO">
+		select * from
+		    (select rownum rn, A.* from
+		        (select * from
+		            (ezenat_product inner join ezenat_product_image
+		                on ezenat_product.product_num = ezenat_product_image.product_num
+		            ) where ezenat_product.product_del = 'N'
+		        ) A
+		    )
+		where rn between #{ start } and #{ end }
+	</select>
+
+	<select id = "getProduct" parameterType="int" resultType="ezenatProductAllDTO">
+		select * from
+		    (select A.* from
+		        (select * from
+		            (ezenat_product inner join ezenat_product_image
+		                 on ezenat_product.product_num = ezenat_product_image.product_num
+		            ) where ezenat_product.product_del = 'N'
+		                and ezenat_product.product_num = #{ product_num }
+		        ) A
+		    )
+	</select>
+	
+	<select id="getOrderHistoryList" parameterType = "int" resultType = "ezenatOrderHistoryDTO">
+		select * from ezenat_order_history
+			where member_num = #{ member_num }
+	</select>
+	
+	<select id="getStatusCount" parameterType="Map" resultType = "int">
+		select count(*) from
+		    (ezenat_order_product inner join ezenat_order_history
+		        on ezenat_order_product.order_history_num = ezenat_order_history.order_history_num
+		    ) where ezenat_order_product.order_history_num = #{ order_history_num }
+		            and ezenat_order_product.order_product_status = #{ status }
+		            and ezenat_order_history.order_history_date between sysdate-180 and sysdate
+	</select>
+</mapper>

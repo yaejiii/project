@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.ezen.ezenat.mapper.AdminNoticeBoardMapper"> <!-- 자기이름  중복된 이름 나올 경우, 자기 경로 제대로 찾아가도록 하기 위해 미리ㅣ 씀--> 
+
+	<insert id="insert_notice_board" parameterType="EzenatNoticeBoardDTO">
+	 	insert into ezenat_notice_board values(
+	 	ezenat_notice_board_seq.nextval, 
+	 	#{notice_board_subject}, 
+	 	#{notice_board_content}, 
+	 	sysdate, 
+	 	#{notice_board_writer}, 
+	 	#{notice_board_writer_ip}, 
+	 	0)
+	</insert>
+	
+	<select id="list_notice_board" resultType="EzenatNoticeBoardDTO">
+		select * from (select rownum rn, A.* 
+		from(select * from ezenat_notice_board order by notice_board_num desc)A) where rn between #{ startRow } and #{ endRow }
+	</select>
+	
+	<select id="get_notice_board_count" resultType="int">
+		select count(*) from ezenat_notice_board
+	</select>
+	
+	<select id="get_notice_board_content"  parameterType="int" resultType="EzenatNoticeBoardDTO"> 
+	 	select * from ezenat_notice_board where notice_board_num = 
+	 	#{notice_board_num}
+	</select>
+	
+	<update id="updateContent" parameterType="EzenatNoticeBoardDTO">
+		update ezenat_notice_board 
+		
+		set notice_board_subject=#{notice_board_subject},
+		     notice_board_content=#{notice_board_content}
+
+	 	where notice_board_num=#{notice_board_num}
+	</update>
+
+	<delete id="deleteContent" parameterType="int">
+		delete from ezenat_notice_board where notice_board_num = #{notice_board_num}
+ 	</delete>
+
+	<select id="search_notice_board" resultType="ezenatNoticeBoardDTO">
+	<!-- 	select from 
+		(A.*
+		(select * from ezenat_notice_board 
+		where between 
+		to_char(#{start_date}) and 
+		to_char(#{end_date}))A) 
+		where 
+		${search} like 
+		%#{search_string}%
+	 -->
+
+	select * from (select rownum rn, A.* 
+	from(select * from (B.* (select from (C.* (select * form ezenat_notice_board where 
+	notice_board_input_date between to_date('#{start_date}', 'YYYY-MM-DD') and to_date(#{end_date}, 'YYYY-MM-DD'))C) where ${search} = #{search_string})B) order by notice_board_num desc)A) where rn between #{ startRow } and #{ endRow }
+</select>
+
+
+
+
+
+
+
+
+
+
+
+<!-- <update id="readcount" parameterType="int">
+	update ezenat_notice_board set readcount=readcount+1 where notice_board_num = #{notice_board_num}
+</update>
+
+ <update id="updateBoard" parameterType="EzenatNoticeBoardDTO">
+ 	update ezenat_notice_board set subject=#{notice_board_subject}, content=#{notice_board_content} where notice_board_num = #{notice_board_num}
+ </update>
+ 
+ <delete id="delete_notice_board" parameterType="int">
+ 	delete from ezenat_notice_board where notice_board_num = #{notice_board_num}
+ </delete> --> 
+</mapper>
